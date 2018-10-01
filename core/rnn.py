@@ -85,8 +85,8 @@ def main():
     #     x, y, test_size=0.2, random_state=np.random.randint(0, 42)
     # )
 
-    x_train, y_train = load_data("../data/uci_train_4_labels.csv", sequence_length, LABELS)
-    x_test, y_test = load_data("../data/uci_test_4_labels.csv", sequence_length, LABELS)
+    x_train, y_train = load_data("../data/uci_train_4.csv", sequence_length, LABELS)
+    x_test, y_test = load_data("../data/uci_test_4.csv", sequence_length, LABELS)
 
     filepath = f"../models/uci-{sequence_length}.h5"
 

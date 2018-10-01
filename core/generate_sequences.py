@@ -102,12 +102,8 @@ if __name__ == "__main__":
     labels = ["stairs_up", "stairs_down", "walking"]
     sequence_lengths = [3]
     for i in range(2, 6):
-        sequences = generate_sequences(
-            1000, "../data/uci_test_6_labels.csv", labels, [i]
-        )
+        sequences = generate_sequences(1000, "../data/uci_test_6.csv", labels, [i])
         save_sequences(sequences, f"../pickle/sequences_{i}.pkl")
 
-    sequences = generate_sequences(
-        1000, "../data/uci_test_6_labels.csv", labels, [2, 3, 4, 5]
-    )
+    sequences = generate_sequences(1000, "../data/uci_test_6.csv", labels, [2, 3, 4, 5])
     save_sequences(sequences, "../pickle/sequences_2345.pkl")
