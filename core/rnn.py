@@ -19,6 +19,8 @@ def load_data(filename, sequence_length, labels):
     df = pd.read_csv(filename)
     lb = LabelBinarizer().fit(labels)
 
+    # print(lb.classes_)
+
     x = []
     y = []
 
@@ -54,13 +56,24 @@ def create_model(sequence_length, labels):
     return model
 
 
-def train(model, x_train, y_train, x_test, y_test, epochs, batch_size, save_path=""):
+def train(
+    model,
+    x_train,
+    y_train,
+    x_test,
+    y_test,
+    epochs,
+    batch_size,
+    save_path="",
+    verbose=True,
+):
     history = model.fit(
         x_train,
         y_train,
         epochs=epochs,
         batch_size=batch_size,
         validation_data=(x_test, y_test),
+        verbose=verbose,
     )
 
     if save_path != "":
@@ -74,6 +87,8 @@ def train(model, x_train, y_train, x_test, y_test, epochs, batch_size, save_path
     plt.xlabel("epoch")
     plt.legend(["train", "test"], loc="upper left")
     plt.show()
+
+    return history
 
 
 def main():

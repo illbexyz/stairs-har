@@ -7,17 +7,27 @@ from keras.models import load_model
 from core.generate_sequences import load_sequences
 
 
-WINDOW_SIZE = 100
+WINDOW_SIZE = 128
 OFFSET = 30
-N_SEQUENCES = 1000
 
 
-def arg_to_label(arg):
+def arg_to_label_6(arg):
     if arg == 2:
         return "stairs_down"
     elif arg == 3:
         return "stairs_up"
     elif arg == 5:
+        return "walking"
+    else:
+        return "other"
+
+
+def arg_to_label_4(arg):
+    if arg == 1:
+        return "stairs_down"
+    elif arg == 2:
+        return "stairs_up"
+    elif arg == 3:
         return "walking"
     else:
         return "other"
@@ -38,7 +48,7 @@ def calc_floor(sequence):
     return curr_floor
 
 
-def predict(model, sequences):
+def predict(model, sequences, verbose=False):
     successes = 0
     for i, (sequence, floor, labels) in enumerate(sequences):
         flat_list = [item for sublist in sequence for item in sublist]
@@ -50,13 +60,14 @@ def predict(model, sequences):
                 exp_window = np.expand_dims(window, axis=0)
                 y = model.predict(exp_window)
                 argmax = np.argmax(y)
-                prediction = arg_to_label(argmax)
+                prediction = arg_to_label_4(argmax)
                 predictions.append(prediction)
         # print(predictions)
         predicted_floor = calc_floor(predictions)
-        # print(
-        #     f"{i + 1}/{len(sequences)} Predicted floor: {predicted_floor}, Actual floor: {floor}"
-        # )
+        if verbose:
+            print(
+                f"{i + 1}/{len(sequences)} Predicted floor: {predicted_floor}, Actual floor: {floor}"
+            )
         if floor == predicted_floor:
             successes += 1
 
@@ -65,7 +76,7 @@ def predict(model, sequences):
 
 def main():
     print("Loading model...")
-    model = load_model("../models/ucii.h5")
+    model = load_model("models/uci4-128.h5")
     # model = create_model()
 
     # print("Reading data...")
@@ -80,16 +91,11 @@ def main():
     #     x_train, y_train, epochs=10, batch_size=32, validation_data=(x_test, y_test)
     # )
 
-    # print()
-
-    # print("Generating sequences...")
-    # sequences_with_floor = generate_sequences(N_SEQUENCES)
-
     print("Loading sequences...")
-    sequences_floor_labels = load_sequences("../pickle/sequences_2.pkl")
+    sequences_floor_labels = load_sequences("pickle/sequences_2.pkl")
 
     print("Predicting sequences floor...")
-    successes = predict(model, sequences_floor_labels)
+    successes = predict(model, sequences_floor_labels, verbose=True)
 
     success_rate = float(successes) / float(len(sequences_floor_labels))
 
